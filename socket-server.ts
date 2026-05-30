@@ -1,7 +1,10 @@
 import { createServer } from 'node:http'
 import { Server } from 'socket.io'
+import dotenv from 'dotenv'
 
-const port = parseInt(process.env.SOCKET_PORT || '4789', 10)
+dotenv.config()
+
+const port = parseInt(process.env.SOCKET_PORT || '', 10)
 
 interface TrailPoint {
   lat: number
