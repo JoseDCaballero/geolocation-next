@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, unlink } from 'node:fs/promises'
+import { writeFile, unlink, mkdir } from 'node:fs/promises'
 import path from 'path'
-import { deleteImage } from '@/lib/db'
+import { deleteImage } from '@/lib/storage'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   const formData = await request.formData()
@@ -15,19 +17,24 @@ export async function POST(request: NextRequest) {
   const ext = file.name.split('.').pop() || 'jpg'
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
-  const filepath = path.join(process.cwd(), 'public', 'uploads', filename)
 
+  const uploadDir = process.env.VERCEL
+    ? '/tmp/uploads'
+    : path.join(process.cwd(), 'public', 'uploads')
+
+  await mkdir(uploadDir, { recursive: true })
+  const filepath = path.join(uploadDir, filename)
   await writeFile(filepath, buffer)
 
   if (oldFilename) {
-    const oldPath = path.join(process.cwd(), 'public', 'uploads', oldFilename)
+    const oldPath = path.join(uploadDir, oldFilename)
     try {
       await unlink(oldPath)
       deleteImage(oldFilename)
     } catch {}
   }
 
-  return NextResponse.json({ url: `/uploads/${filename}` })
+  return NextResponse.json({ url: `/api/files/${filename}` })
 }
 
 export async function DELETE(request: NextRequest) {
@@ -38,7 +45,11 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'No filename provided' }, { status: 400 })
   }
 
-  const filepath = path.join(process.cwd(), 'public', 'uploads', filename)
+  const uploadDir = process.env.VERCEL
+    ? '/tmp/uploads'
+    : path.join(process.cwd(), 'public', 'uploads')
+
+  const filepath = path.join(uploadDir, filename)
   try {
     await unlink(filepath)
     deleteImage(filename)

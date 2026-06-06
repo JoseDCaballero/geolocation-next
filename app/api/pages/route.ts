@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getAllPages } from '@/lib/db'
+import { getAllPages } from '@/lib/storage'
 
 export const dynamic = 'force-dynamic'
 
