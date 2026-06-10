@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Nosotros - Historias",
+  title: "Nosotros - Nuestra Historia",
   description: "Un libro interactivo de historias",
 };
 

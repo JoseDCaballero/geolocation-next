@@ -24,7 +24,7 @@ function getFilePath() {
 
 function seedData(): Store {
   const pages: Page[] = [
-    { id: 1, type: 'cover', title: 'Mi Libro', content: 'Un libro de historias', image_path: '', position: 0 },
+    { id: 1, type: 'cover', title: 'Nosotros', content: 'Nuestras historias', image_path: '', position: 0 },
   ]
 
   let id = 2

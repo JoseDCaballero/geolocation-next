@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { writeFile, unlink, mkdir } from 'node:fs/promises'
+import { writeFile, mkdir } from 'node:fs/promises'
 import path from 'path'
 import { deleteImage } from '@/lib/storage'
 
@@ -27,11 +27,7 @@ export async function POST(request: NextRequest) {
   await writeFile(filepath, buffer)
 
   if (oldFilename) {
-    const oldPath = path.join(uploadDir, oldFilename)
-    try {
-      await unlink(oldPath)
-      deleteImage(oldFilename)
-    } catch {}
+    deleteImage(oldFilename)
   }
 
   return NextResponse.json({ url: `/api/files/${filename}` })
@@ -45,16 +41,9 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'No filename provided' }, { status: 400 })
   }
 
-  const uploadDir = process.env.VERCEL
-    ? '/tmp/uploads'
-    : path.join(process.cwd(), 'public', 'uploads')
-
-  const filepath = path.join(uploadDir, filename)
-  try {
-    await unlink(filepath)
-    deleteImage(filename)
-  } catch {
-    return NextResponse.json({ error: 'File not found' }, { status: 404 })
+  const ok = deleteImage(filename)
+  if (!ok) {
+    return NextResponse.json({ error: 'Image not found' }, { status: 404 })
   }
 
   return NextResponse.json({ success: true })

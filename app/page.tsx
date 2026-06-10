@@ -149,10 +149,10 @@ export default function Book() {
                   />
                 ) : (
                   <h1 className="cover-title" onClick={() => setEditing({ id: cover.id, field: 'title' })}>
-                    {cover.title || 'Nuestra Historia'}
+                    {cover.title || 'Nosotros'}
                   </h1>
                 )}
-                <p className="cover-sub">{cover.content || 'Un libro de historias'}</p>
+                <p className="cover-sub">{cover.content || 'Nuestras historias'}</p>
               </>
             )}
             <button className="btn-open" onClick={goNext}>Abrir libro →</button>
