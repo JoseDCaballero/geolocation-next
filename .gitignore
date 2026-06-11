@@ -43,5 +43,3 @@ next-env.d.ts
 # book data
 book.sqlite
 book-data.json
-public/uploads/*
-!public/uploads/.gitkeep
